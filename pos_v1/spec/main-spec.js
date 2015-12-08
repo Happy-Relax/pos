@@ -39,4 +39,101 @@ describe('pos', function () {
 
           expect(console.log).toHaveBeenCalledWith(expectText);
     });
+
+    it('Cut("ITEM000003-2")', function () {
+
+//            spyOn(console, 'log');
+
+            var expectText ={barcode:'ITEM000003',num:2};
+            var actual=Cut('ITEM000003-2');
+
+              expect(actual).toEqual(expectText);
+     });
+
+     it("Information({barcode:'ITEM000001',num:1},loadAllItems())", function () {
+
+
+
+            var expectText ={ barcode: 'ITEM000001', num:1, name: '雪碧', unit: '瓶',price: 3.00};
+            var actual=Information({barcode:'ITEM000001',num:1},loadAllItems());
+
+              expect(actual).toEqual(expectText);
+     });
+
+     it("Count(CartItems_information)", function () {
+
+
+
+            var expectText =[ {barcode:'ITEM000001',count:5,name:'雪碧',price:3,unit:'瓶'}
+                              ,{barcode:'ITEM000003',count:2,name:'荔枝',price:15,unit:'斤'}
+                              ,{barcode:'ITEM000005',count:3,name:'方便面',price:4.5,unit:'袋'}];
+
+            var actual=Count([{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
+                                   ,{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
+                                   ,{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
+                                   ,{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
+                                   ,{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
+                                   ,{barcode:'ITEM000003',num:2,name:'荔枝',price:15,unit:'斤'}
+                                   ,{barcode:'ITEM000005',num:1,name:'方便面',price:4.5,unit:'袋'}
+                                   ,{barcode:'ITEM000005',num:1,name:'方便面',price:4.5,unit:'袋'}
+                                   ,{barcode:'ITEM000005',num:1,name:'方便面',price:4.5,unit:'袋'}]);
+
+              expect(actual).toEqual(expectText);
+     });
+
+     it("Count_all(inputs)", function () {
+
+
+
+            var expectText  =[ {barcode:'ITEM000001',count:5,name:'雪碧',price:3,unit:'瓶'}
+                                ,{barcode:'ITEM000003',count:2,name:'荔枝',price:15,unit:'斤'}
+                                ,{barcode:'ITEM000005',count:3,name:'方便面',price:4.5,unit:'袋'}];
+            var actual=Count_all(inputs);
+
+              expect(actual).toEqual(expectText);
+     });
+
+     it("Promotion(CartItems,l_promotions)", function () {
+
+            var l_promotions=loadPromotions()[0].barcodes
+
+            var expectText =[ {count:5,name:'雪碧',price:3,unit:'瓶',promotionprice:3}
+                              ,{count:2,name:'荔枝',price:15,unit:'斤',promotionprice:0}
+                              ,{count:3,name:'方便面',price:4.5,unit:'袋',promotionprice:4.5}];
+            var CartItems=[ {barcode:'ITEM000001',count:5,name:'雪碧',price:3,unit:'瓶'}
+                              ,{barcode:'ITEM000003',count:2,name:'荔枝',price:15,unit:'斤'}
+                              ,{barcode:'ITEM000005',count:3,name:'方便面',price:4.5,unit:'袋'}];
+            var actual=Promotion(CartItems,l_promotions);
+
+              expect(actual).toEqual(expectText);
+     });
+
+     it("total(promotion_priceItems)", function () {
+
+
+
+            var expectText =[ {count:5,name:'雪碧',price:3,unit:'瓶',promotionprice:3}
+                              ,{count:2,name:'荔枝',price:15,unit:'斤',promotionprice:0}
+                              ,{count:3,name:'方便面',price:4.5,unit:'袋',promotionprice:4.5}];
+            var CartItems=[ {count:5,name:'雪碧',price:3,unit:'瓶',promotionprice:3,totalprice:12}
+                             ,{count:2,name:'荔枝',price:15,unit:'斤',promotionprice:0,totalprice:30}
+                             ,{count:3,name:'方便面',price:4.5,unit:'袋',promotionprice:4.5,totalprice:9}];
+            var actual=total(promotion_priceItems);
+
+              expect(actual).toEqual(expectText);
+     });
+
+     it("Price(CartItems)", function () {
+
+
+
+            var expectText =
+            var CartItems=[ {count:5,name:'雪碧',price:3,unit:'瓶',promotionprice:3,totalprice:12}
+                            ,{count:2,name:'荔枝',price:15,unit:'斤',promotionprice:0,totalprice:30}
+                            ,{count:3,name:'方便面',price:4.5,unit:'袋',promotionprice:4.5,totalprice:9}];
+
+            var actual=total(promotion_priceItems);
+
+            expect(actual).toEqual(expectText);
+     });
 });
