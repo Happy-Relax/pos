@@ -2,7 +2,8 @@
 //商品计数*****************************************
 //元素拆分
 function Cut(input)
-{var cut={barcode:'a',num:0};
+{
+ var cut={barcode:'a',num:0};
  for(var i=0;i<input.length;i++)
  {
     if(input.slice(i,i+1)=='-')
@@ -17,7 +18,8 @@ function Cut(input)
 
 //商品信息查询
 function Information(cut,AllItems)
-{var CartItem_information={barcode:'',num:0,name:'',price:0,unit:''};
+{
+ var CartItem_information={barcode:'',num:0,name:'',price:0,unit:''};
  for(var i=0;i<AllItems.length;i++)
    {if(cut.barcode==AllItems[i].barcode)
      {CartItem_information={barcode:cut.barcode,num:cut.num,name:AllItems[i].name,price:AllItems[i].price,unit:AllItems[i].unit};
@@ -27,7 +29,8 @@ function Information(cut,AllItems)
 }
 //商品计数
 function Count(CartItems_information)
-{var CartItems=new Array(),p=0;
+{
+ var CartItems=new Array(),p=0;
  for(var i=0;i<CartItems_information.length;i++)
  {for(var j=0;j<CartItems.length;j++)
     {if(CartItems[j].name==CartItems_information[i].name)
@@ -44,7 +47,8 @@ function Count(CartItems_information)
 }
 //商品计数总函数
 function Count_all(inputs)
-{var CartItems=new Array(),CartItems_information=new Array();
+{
+ var CartItems=new Array(),CartItems_information=new Array();
  for(var i=0;i<inputs.length;i++)
  {CartItems_information.push(Information(Cut(inputs[i]),loadAllItems()));
 
@@ -57,7 +61,8 @@ function Count_all(inputs)
 //************************************************************
 //优惠商品计价
 function Promotion(CartItems,l_promotions)
-{  var promotion_priceItems=new Array();
+{
+   var promotion_priceItems=new Array();
    for(var i=0;i<CartItems.length;i++)
        {for(var j=0;j<l_promotions.length;j++)
            {if(l_promotions[j]==CartItems[i].barcode)
@@ -72,7 +77,8 @@ function Promotion(CartItems,l_promotions)
 
 //小计
 function total(promotion_priceItems)
-{var priceItems=new Array(),tt_price=0;
+{
+ var priceItems=new Array(),tt_price=0;
  for(var i=0;i<promotion_priceItems.length;i++)
     {tt_price=promotion_priceItems[i].price*promotion_priceItems[i].count-promotion_priceItems[i].promotionprice;
      priceItems.push({name:promotion_priceItems[i].name,count:promotion_priceItems[i].count,price:promotion_priceItems[i].price,unit:promotion_priceItems[i].unit,promotionprice:promotion_priceItems[i].promotionprice,totalprice:tt_price});
@@ -82,16 +88,18 @@ function total(promotion_priceItems)
 
 //商品计价总函数
 function Price(CartItems)
-{var priceItems=new Array();
-priceItems=total(Promotion(CartItems,loadPromotions()[0].barcodes));
-return priceItems;
+{
+    var priceItems=new Array();
+    priceItems=total(Promotion(CartItems,loadPromotions()[0].barcodes));
+    return priceItems;
 }
 //****************************************
 
 //***************************************
 //优惠商品列表
 function Gift(priceItems)
-{ var GiftItems=new Array(),num=0;
+{
+  var GiftItems=new Array(),num=0;
   for(var i=0;i<priceItems.length;i++)
      {
          if(priceItems[i].promotionprice!=0)
@@ -106,7 +114,8 @@ function Gift(priceItems)
 //***********************************
 //总计
 function Sum(priceItems)
-{var Receipt={total:0,save:0}
+{
+ var Receipt={total:0,save:0}
  for(var i=0;i<priceItems.length;i++)
      {
          Receipt.total+=priceItems[i].totalprice;
@@ -118,7 +127,8 @@ function Sum(priceItems)
 //*********************************************
 //打印所有商品
 function PrintAllItems(priceItems)
-{var string=('***<没钱赚商店>购物清单***\n');
+{
+ var string=('***<没钱赚商店>购物清单***\n');
  for(var i=0;i<priceItems.length;i++)
     {
      var num=priceItems[i].totalprice;
@@ -128,7 +138,8 @@ function PrintAllItems(priceItems)
 }
 //打印优惠商品
 function PrintGiftItems(GiftItems)
-{var string;
+{
+ var string;
  string='----------------------\n挥泪赠送商品：\n';
  for(var i=0;i<GiftItems.length;i++)
     {
@@ -138,14 +149,16 @@ function PrintGiftItems(GiftItems)
 }
 
 function PrintSum(Receipt)
-{var string='----------------------\n';
+{
+ var string='----------------------\n';
  string+='总计：'+Receipt.total.toFixed(2)+'(元)\n' +'节省：'+Receipt.save.toFixed(2)+'(元)\n'+'**********************';
  return string;
 }
 
 //打印总函数
 function Print(priceItems,GiftItems,Receipt)
-{var string='';
+{
+ var string='';
  string=PrintAllItems(priceItems)+PrintGiftItems(GiftItems)+PrintSum(Receipt);
  console.log(string);
 }
@@ -153,26 +166,19 @@ function Print(priceItems,GiftItems,Receipt)
 //*************************************
 function printInventory(inputs)
 {
-//1、每块代码不超过15行。2、只允许一级缩进（for-for or for-if）
-    //*******************************
+    //1、每块代码不超过15行。2、只允许一级缩进（for-for or for-if）
     //商品计数，输入：inputs（条形码编码），输出：CartItems=[{name:'',count:,price:,unit:''}]
-    var CartItems=new Array(),p=0,str,num,sub=0,load_sub=0,AllItems=loadAllItems();
+    var CartItems=new Array(),AllItems=loadAllItems();
     CartItems=Count_all(inputs);
-    //***************************************
     //商品计价，输入：CartItems;输出：priceItems
-    var priceItems=new Array(),l_promotions=loadPromotions()[0].barcodes,totalprice=0,promotion_price=0;
+    var priceItems=new Array(),l_promotions=loadPromotions()[0].barcodes;
     priceItems=Price(CartItems);
-    //***********************************
     //优惠商品列表，输入：priceItems,输出:GiftItems
     var GiftItems=new Array();
     GiftItems=Gift(priceItems)
-    //*************************************
     //总计,输入：priceItems，输出：
     var Receipt={total:0,save:0}
     Receipt=Sum(priceItems)
-   //***************************************
-   //打印，输入:priceItems,GiftItems,Receipt
    //打印第一部分--所有商品
    Print(priceItems,GiftItems,Receipt);
-
 }
