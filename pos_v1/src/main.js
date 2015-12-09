@@ -16,43 +16,51 @@ function Cut(input)
  return cut;
 }
 
-//商品信息查询
+//商品信息查询_.findIndex(array, [predicate=_.identity], [thisArg])
 function Information(cut,AllItems)
 {
  var CartItem_information={barcode:'',num:0,name:'',price:0,unit:''};
- for(var i=0;i<AllItems.length;i++)
-   {if(cut.barcode==AllItems[i].barcode)
-     {CartItem_information={barcode:cut.barcode,num:cut.num,name:AllItems[i].name,price:AllItems[i].price,unit:AllItems[i].unit};
-      break;}
-   }
+// for(var i=0;i<AllItems.length;i++)
+//   {if(cut.barcode==AllItems[i].barcode)
+//     {CartItem_information={barcode:cut.barcode,num:cut.num,name:AllItems[i].name,price:AllItems[i].price,unit:AllItems[i].unit};
+//      break;}
+//   }
+ var i=_.findIndex(AllItems,function(Items){return Items.barcode==cut.barcode});
+ CartItem_information={barcode:cut.barcode,num:cut.num,name:AllItems[i].name,price:AllItems[i].price,unit:AllItems[i].unit};
  return CartItem_information;
 }
-//商品计数
-function Count(CartItems_information)
-{
+//商品计数_.groupBy;_.map;_.sum;
+function Count(CartItems_information){
  var CartItems=new Array(),p=0;
- for(var i=0;i<CartItems_information.length;i++)
- {for(var j=0;j<CartItems.length;j++)
-    {if(CartItems[j].name==CartItems_information[i].name)
-        {p=1;
-         break;}
-    }
-  if(p==0)
-  {CartItems.push({barcode:CartItems_information[i].barcode,name:CartItems_information[i].name,price:CartItems_information[i].price,unit:CartItems_information[i].unit,count:CartItems_information[i].num})}
-  else
-  {CartItems[j].count+=CartItems_information[i].num;}
-  p=0;
- }
+// for(var i=0;i<CartItems_information.length;i++)
+// {for(var j=0;j<CartItems.length;j++)
+//    {if(CartItems[j].name==CartItems_information[i].name)
+//        {p=1;
+//         break;}
+//    }
+//  if(p==0)
+//  {CartItems.push({barcode:CartItems_information[i].barcode,name:CartItems_information[i].name,price:CartItems_information[i].price,unit:CartItems_information[i].unit,count:CartItems_information[i].num})}
+//  else
+//  {CartItems[j].count+=CartItems_information[i].num;}
+//  p=0;
+// }
+ var groupbyed=_.groupBy(CartItems_information,function(Items){return Items.barcode});
+ var CartItems=_.map(groupbyed,function(Item){
+        var numcount=_.sum(Item,'num');
+        return {barcode:Item[0].barcode,name:Item[0].name,price:Item[0].price,unit:Item[0].unit,count:numcount};
+        })
+
  return CartItems;
 }
 //商品计数总函数
 function Count_all(inputs)
 {
  var CartItems=new Array(),CartItems_information=new Array();
- for(var i=0;i<inputs.length;i++)
- {CartItems_information.push(Information(Cut(inputs[i]),loadAllItems()));
-
- }
+// for(var i=0;i<inputs.length;i++)
+// {CartItems_information.push(Information(Cut(inputs[i]),loadAllItems())); }
+ CartItems_information=_.map(inputs,function(item){
+                              return Information(Cut(item),loadAllItems());
+                        })
  CartItems=Count(CartItems_information);
  return CartItems;
 }
@@ -63,15 +71,21 @@ function Count_all(inputs)
 function Promotion(CartItems,l_promotions)
 {
    var promotion_priceItems=new Array();
-   for(var i=0;i<CartItems.length;i++)
-       {for(var j=0;j<l_promotions.length;j++)
-           {if(l_promotions[j]==CartItems[i].barcode)
-               { promotion_price=parseInt(CartItems[i].count/3)*CartItems[i].price;
-                 break;}
-            else
-               {promotion_price=0;}}
-        promotion_priceItems.push({name:CartItems[i].name,count:CartItems[i].count,price:CartItems[i].price,unit:CartItems[i].unit,promotionprice:promotion_price});
-       }
+//   for(var i=0;i<CartItems.length;i++)
+//       {for(var j=0;j<l_promotions.length;j++)
+//           {if(l_promotions[j]==CartItems[i].barcode)
+//               { promotion_price=parseInt(CartItems[i].count/3)*CartItems[i].price;
+//                 break;}
+//            else
+//               {promotion_price=0;}}
+//        promotion_priceItems.push({name:CartItems[i].name,count:CartItems[i].count,price:CartItems[i].price,unit:CartItems[i].unit,promotionprice:promotion_price});
+//       }
+    promotion_priceItems=_.map(CartItems,function(Items){
+                                         var price=0;
+                                         if(_.find(l_promotions,function(n){return Items.barcode==n})!= undefined)
+                                               { price=parseInt(Items.count/3)*Items.price;}
+                                         return {name:Items.name,count:Items.count,price:Items.price,unit:Items.unit,promotionprice:price};
+                                        })
    return promotion_priceItems;
 }
 
@@ -79,10 +93,14 @@ function Promotion(CartItems,l_promotions)
 function total(promotion_priceItems)
 {
  var priceItems=new Array(),tt_price=0;
- for(var i=0;i<promotion_priceItems.length;i++)
-    {tt_price=promotion_priceItems[i].price*promotion_priceItems[i].count-promotion_priceItems[i].promotionprice;
-     priceItems.push({name:promotion_priceItems[i].name,count:promotion_priceItems[i].count,price:promotion_priceItems[i].price,unit:promotion_priceItems[i].unit,promotionprice:promotion_priceItems[i].promotionprice,totalprice:tt_price});
-    }
+// for(var i=0;i<promotion_priceItems.length;i++)
+//    {tt_price=promotion_priceItems[i].price*promotion_priceItems[i].count-promotion_priceItems[i].promotionprice;
+//     priceItems.push({name:promotion_priceItems[i].name,count:promotion_priceItems[i].count,price:promotion_priceItems[i].price,unit:promotion_priceItems[i].unit,promotionprice:promotion_priceItems[i].promotionprice,totalprice:tt_price});
+//    }
+ priceItems=_.map(promotion_priceItems,function(Item){
+                                        tt_price=Item.price*Item.count-Item.promotionprice;
+                                        return {name:Item.name,count:Item.count,price:Item.price,unit:Item.unit,promotionprice:Item.promotionprice,totalprice:tt_price}
+                                        })
  return priceItems;
 }
 
@@ -100,13 +118,19 @@ function Price(CartItems)
 function Gift(priceItems)
 {
   var GiftItems=new Array(),num=0;
-  for(var i=0;i<priceItems.length;i++)
-     {
-         if(priceItems[i].promotionprice!=0)
-         {num=parseInt(priceItems[i].promotionprice/priceItems[i].price);
-          GiftItems.push({name:priceItems[i].name,promotioncount:num,unit:priceItems[i].unit});
-         }
-     }
+//  for(var i=0;i<priceItems.length;i++)
+//     {
+//         if(priceItems[i].promotionprice!=0)
+//         {num=parseInt(priceItems[i].promotionprice/priceItems[i].price);
+//          GiftItems.push({name:priceItems[i].name,promotioncount:num,unit:priceItems[i].unit});
+//         }
+//     }
+  GiftItems=_.map(priceItems,function(item){
+                              if(item.promotionprice!=0)
+                                    num=parseInt(item.promotionprice/item.price);
+                              return  {name:item.name,promotioncount:num,unit:item.unit}
+                             });
+  GiftItems=_.difference(GiftItems,GiftItems[_.findIndex(GiftItems,function(Items){return Items.promotioncount==0}]);
   return GiftItems;
 }
 //**************************************

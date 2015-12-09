@@ -69,14 +69,16 @@ describe('pos', function () {
                               ,{barcode:'ITEM000005',count:3,name:'方便面',price:4.5,unit:'袋'}];
 
             var actual=Count([{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
-                                   ,{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
-                                   ,{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
-                                   ,{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
-                                   ,{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
-                                   ,{barcode:'ITEM000003',num:2,name:'荔枝',price:15,unit:'斤'}
-                                   ,{barcode:'ITEM000005',num:1,name:'方便面',price:4.5,unit:'袋'}
-                                   ,{barcode:'ITEM000005',num:1,name:'方便面',price:4.5,unit:'袋'}
-                                   ,{barcode:'ITEM000005',num:1,name:'方便面',price:4.5,unit:'袋'}]);
+                              ,{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
+                              ,{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
+                              ,{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
+                              ,{barcode:'ITEM000001',num:1,name:'雪碧',price:3,unit:'瓶'}
+
+                              ,{barcode:'ITEM000003',num:2,name:'荔枝',price:15,unit:'斤'}
+
+                              ,{barcode:'ITEM000005',num:1,name:'方便面',price:4.5,unit:'袋'}
+                              ,{barcode:'ITEM000005',num:1,name:'方便面',price:4.5,unit:'袋'}
+                              ,{barcode:'ITEM000005',num:1,name:'方便面',price:4.5,unit:'袋'}]);
 
               expect(actual).toEqual(expectText);
      });
@@ -115,9 +117,11 @@ describe('pos', function () {
             var promotion_priceItems =[ {count:5,name:'雪碧',price:3,unit:'瓶',promotionprice:3}
                               ,{count:2,name:'荔枝',price:15,unit:'斤',promotionprice:0}
                               ,{count:3,name:'方便面',price:4.5,unit:'袋',promotionprice:4.5}];
+
             var expectText=[ {count:5,name:'雪碧',price:3,unit:'瓶',promotionprice:3,totalprice:12}
                              ,{count:2,name:'荔枝',price:15,unit:'斤',promotionprice:0,totalprice:30}
                              ,{count:3,name:'方便面',price:4.5,unit:'袋',promotionprice:4.5,totalprice:9}];
+
             var actual=total(promotion_priceItems);
 
               expect(actual).toEqual(expectText);
@@ -143,7 +147,8 @@ describe('pos', function () {
 
 
             var l_promotions=loadPromotions()[0].barcodes
-            var expectText =[ {name:'雪碧',promotioncount:1,unit:'瓶'},{name:'方便面',promotioncount:1,unit:'袋'}];
+            var expectText =[ {name:'雪碧',promotioncount:1,unit:'瓶'}
+                             ,{name:'方便面',promotioncount:1,unit:'袋'}];
             var priceItems=[ {count:5,name:'雪碧',price:3,unit:'瓶',promotionprice:3,totalprice:12}
                             ,{count:2,name:'荔枝',price:15,unit:'斤',promotionprice:0,totalprice:30}
                              ,{count:3,name:'方便面',price:4.5,unit:'袋',promotionprice:4.5,totalprice:9}];
